@@ -1,4 +1,5 @@
 import { createConnection } from 'typeorm';
+import { postgresTables } from './postrgestables'
 export const postgresDB = async () => {
     return await createConnection({
         type     : 'postgres',
@@ -8,6 +9,7 @@ export const postgresDB = async () => {
         password : '',
         database : 'koa',
         ssl: false,
+        entities: postgresTables,
         logging: ['query', 'error'],
         synchronize: true,
     }).then((connection) => {

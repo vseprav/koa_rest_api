@@ -1,19 +1,16 @@
-import { createConnection } from 'typeorm';
-import { postgresTables } from './postrgestables'
+import { createConnection } from "typeorm";
+import { postgresTables } from "./postrgestables";
 export const postgresDB = async () => {
     return await createConnection({
-        type     : 'postgres',
-        host     : 'localhost',
-        port     :  5432,
-        username : '',
-        password : '',
-        database : 'koa',
-        ssl: false,
+        database : "koa",
         entities: postgresTables,
-        logging: ['query', 'error'],
+        host     : "localhost",
+        logging: ["query", "error"],
+        password : "",
+        port     :  5432,
+        ssl: false,
         synchronize: true,
-    }).then((connection) => {
-        console.log('Database connection established');
-
+        type     : "postgres",
+        username : "",
     });
 };

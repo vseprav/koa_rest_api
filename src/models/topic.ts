@@ -2,29 +2,26 @@ import {
     Column,
     CreateDateColumn,
     Entity,
-    PrimaryGeneratedColumn,
-    UpdateDateColumn,
+    ManyToMany,
+    PrimaryGeneratedColumn, UpdateDateColumn,
 } from "typeorm";
 
-import { IsEmail, Length } from "class-validator";
+import { Length } from "class-validator";
+import {Word} from "./word";
 
-@Entity("users")
+@Entity("topics")
 
-export class User {
+export class Topic {
 
     @PrimaryGeneratedColumn("uuid")
     public id: string;
 
     @Column("text")
-    public name: string;
-
-    @Column("text")
     @Length(5, 100)
-    @IsEmail()
-    public email: string;
+    public title: string;
 
-    @Column("text")
-    public hashedPassword: string;
+    @ManyToMany((type) => Word, (word) => word.topics)
+    public words: Word[];
 
     @CreateDateColumn()
     public createdAt: Date;

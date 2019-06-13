@@ -1,8 +1,10 @@
-import * as bodyParser from 'koa-bodyparser';
-import { postgresDB } from './databases/postgresDB';
-import { qaRouter } from 'routes/qaRoutes';
-import {restRouter} from 'routes/restRoutes';
-const app = require('./app');
+import * as Koa from "koa";
+import * as bodyParser from "koa-bodyparser";
+import { qaRouter } from "routes/qaRoutes";
+import {restRouter} from "routes/restRoutes";
+import { postgresDB } from "./databases/postgresDB";
+
+const app = new Koa();
 
 const bootstrap = async () => {
     await postgresDB();

@@ -1,88 +1,89 @@
-import { BaseContext } from 'koa';
-import { getManager, Repository, Not, Equal } from 'typeorm';
-import { validate, ValidationError } from 'class-validator';
-import { User } from 'models/user';
+import { validate, ValidationError } from "class-validator";
+import { BaseContext } from "koa";
+import { User } from "models/user";
+import { Equal, getManager, Not, Repository } from "typeorm";
 
 export default class UserController {
-    public static async getUsers (ctx: BaseContext) {
-        const userRepository: Repository<User> = getManager().getRepository(User);
-        const users: User[] = await userRepository.find();
+    public static async getUsers(ctx: BaseContext) {
+        const repo: Repository<User> = getManager().getRepository(User);
+        const users: User[] = await repo.find();
         ctx.status = 200;
         ctx.body = users;
     }
 
-    public static async getUser (ctx: BaseContext) {
-        const userRepository: Repository<User> = getManager().getRepository(User);
-        const user: User = await userRepository.findOne(ctx.params.id);
+    public static async getUser(ctx: BaseContext) {
+        const repo: Repository<User> = getManager().getRepository(User);
+        const user: User = await repo.findOne(ctx.params.id);
         if (user) {
             ctx.status = 200;
             ctx.body = user;
         } else {
             ctx.status = 400;
-            ctx.body = 'The user you are trying to retrieve doesn\'t exist in the db';
+            ctx.body = "The user you are trying to retrieve doesn't exist in the db";
         }
     }
 
-    public static async createUser (ctx: BaseContext) {
-        const userRepository: Repository<User> = getManager().getRepository(User);
+    public static async createUser(ctx: BaseContext) {
+        const repo: Repository<User> = getManager().getRepository(User);
 
-        const userToBeSaved: User = new User();
+        let user: User = new User();
 
-        userToBeSaved.name = ctx.request.body.name;
-        userToBeSaved.email = ctx.request.body.email;
-        userToBeSaved.hashedPassword = ctx.request.body.hashedPassword;
-        const errors: ValidationError[] = await validate(userToBeSaved, { skipMissingProperties: true });
+        user.name = ctx.request.body.name;
+        user.email = ctx.request.body.email;
+        user.hashedPassword = ctx.request.body.hashedPassword;
+        const errors: ValidationError[] = await validate(user,
+            { skipMissingProperties: true });
         if (errors.length > 0) {
             ctx.status = 400;
             ctx.body = errors;
-        } else if ( await userRepository.findOne({ email: userToBeSaved.email}) ) {
+        } else if ( await repo.findOne({ email: user.email}) ) {
             ctx.status = 400;
-            ctx.body = 'The specified e-mail address already exists';
+            ctx.body = "The specified e-mail address already exists";
         } else {
-            const user = await userRepository.save(userToBeSaved);
+            user = await repo.save(user);
             ctx.status = 201;
             ctx.body = user;
         }
     }
 
-    public static async updateUser (ctx: BaseContext) {
-        const userRepository: Repository<User> = getManager().getRepository(User);
-        const userToBeUpdated: User = await userRepository.findOne(ctx.params.id);
+    public static async updateUser(ctx: BaseContext) {
+        const repo: Repository<User> = getManager().getRepository(User);
+        let user: User = await repo.findOne(ctx.params.id);
 
-        if (!userToBeUpdated) {
+        if (!user) {
 
             ctx.status = 400;
-            ctx.body = 'The user you are trying to retrieve doesn\'t exist in the db';
+            ctx.body = "The user you are trying to retrieve doesn't exist in the db";
         }
-        if(ctx.request.body.name) {userToBeUpdated.name = ctx.request.body.name;}
-        if(ctx.request.body.email) {userToBeUpdated.email = ctx.request.body.email;}
-        if(ctx.request.body.hashedPassword) {userToBeUpdated.hashedPassword = ctx.request.body.hashedPassword;}
+        if (ctx.request.body.name) {user.name = ctx.request.body.name; }
+        if (ctx.request.body.email) {user.email = ctx.request.body.email; }
+        if (ctx.request.body.hashedPassword) {user.hashedPassword = ctx.request.body.hashedPassword; }
 
-        const errors: ValidationError[] = await validate(userToBeUpdated);
+        const errors: ValidationError[] = await validate(user);
         if (errors.length > 0) {
             ctx.status = 400;
             ctx.body = errors;
-        } else if ( !await userRepository.findOne(userToBeUpdated.id) ) {
+        } else if ( !await repo.findOne(user.id) ) {
             ctx.status = 400;
-            ctx.body = 'The user you are trying to update doesn\'t exist in the db';
-        } else if ( await userRepository.findOne({ id: Not(Equal(userToBeUpdated.id)) , email: userToBeUpdated.email}) ) {
+            ctx.body = "The user you are trying to update doesn't exist in the db";
+        } else if ( await repo.findOne({ id: Not(Equal(user.id)), email: user.email}) ) {
             ctx.status = 400;
-            ctx.body = 'The specified e-mail address already exists';
+            ctx.body = "The specified e-mail address already exists";
         } else {
-            const user = await userRepository.save(userToBeUpdated);
+            user = await repo.save(user);
             ctx.status = 201;
             ctx.body = user;
         }
     }
 
-    public static async deleteUser (ctx: BaseContext) {
-        const userRepository: Repository<User> = getManager().getRepository(User);
-        const userToRemove: User = await userRepository.findOne(ctx.params.id);
-        if (!userToRemove) {
+    public static async deleteUser(ctx: BaseContext) {
+        const repo: Repository<User> = getManager().getRepository(User);
+        const user: User = await repo.findOne(ctx.params.id);
+        if (!user) {
             ctx.status = 400;
-            ctx.body = 'The user you are trying to delete doesn\'t exist in the db';
+            ctx.body = "The user you are trying to delete doesn't exist in the db";
         } else {
-            await userRepository.remove(userToRemove);
+            await repo.remove(user);
             ctx.status = 204;
         }
     }

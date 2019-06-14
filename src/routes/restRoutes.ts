@@ -13,3 +13,5 @@ restRouter.get("/topics/:id", controller.topic.getTopic);
 restRouter.post("/topics", controller.topic.createTopic);
 restRouter.put("/topics/:id", controller.topic.updateTopic);
 restRouter.delete("/topics/:id", controller.topic.deleteTopic);
+
+restRouter.get("/topics/:id/words", controller.word.getWordsByTopic);

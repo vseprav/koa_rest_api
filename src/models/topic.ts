@@ -1,7 +1,7 @@
 import {
     Column,
     CreateDateColumn,
-    Entity,
+    Entity, JoinTable,
     ManyToMany,
     PrimaryGeneratedColumn, UpdateDateColumn,
 } from "typeorm";
@@ -21,6 +21,7 @@ export class Topic {
     public title: string;
 
     @ManyToMany((type) => Word, (word) => word.topics)
+    @JoinTable()
     public words: Word[];
 
     @CreateDateColumn()

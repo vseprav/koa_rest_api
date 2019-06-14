@@ -28,22 +28,24 @@ export class TestData {
 
     public static async createTestDictionaryData(ctx: BaseContext) {
         try {
-                const connection = await getConnection();
-                const topic = new Topic();
-                topic.title = "Songs";
-                await connection.manager.save(topic);
+            const connection = await getConnection();
+            const word = new Word();
+            word.value = "numb";
+            await connection.manager.save(word);
 
-                const word = new Word();
-                word.value = "numb";
-                word.topics = [topic];
-                await connection.manager.save(word);
+            const topic = new Topic();
+            topic.title = "Songs";
+            await connection.manager.save(topic);
+            topic.words = [word];
+            await connection.manager.save(topic);
 
-                const meaning = new Meaning();
-                meaning.value = "the feeling of feeling no feeling.";
-                meaning.example = "im jus so numb";
-                meaning.word = word;
-                await connection.manager.save(meaning);
-                ctx.body = "Test dictionary data created successfully";
+            const meaning = new Meaning();
+            meaning.value = "the feeling of feeling no feeling.";
+            meaning.example = "im jus so numb";
+            meaning.word = word;
+            await connection.manager.save(meaning);
+
+            ctx.body = "Test dictionary data created successfully";
         } catch (err) {
             ctx.status = err.statusCode || err.status || 500;
             ctx.body = {

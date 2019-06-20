@@ -15,3 +15,6 @@ restRouter.put("/topics/:id", controller.topic.updateTopic);
 restRouter.delete("/topics/:id", controller.topic.deleteTopic);
 
 restRouter.get("/topics/:id/words", controller.word.getWordsByTopic);
+
+restRouter.get("/dictionaries/lemmas/:world_id", controller.oxfordDictionary.getLemmas);
+restRouter.get("/dictionaries/entries/:world_id", controller.oxfordDictionary.getEntries);

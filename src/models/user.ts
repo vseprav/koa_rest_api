@@ -1,12 +1,13 @@
 import {
     Column,
     CreateDateColumn,
-    Entity,
+    Entity, JoinColumn, OneToOne,
     PrimaryGeneratedColumn,
     UpdateDateColumn,
 } from "typeorm";
 
 import { IsEmail, Length } from "class-validator";
+import {Setting} from "./settings";
 
 @Entity("users")
 
@@ -25,6 +26,10 @@ export class User {
 
     @Column("text")
     public hashedPassword: string;
+
+    @OneToOne((type) => Setting, (setting) => setting.user)
+    @JoinColumn()
+    public setting: Setting;
 
     @CreateDateColumn()
     public createdAt: Date;

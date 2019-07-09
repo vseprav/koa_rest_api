@@ -15,3 +15,8 @@ restRouter.put("/topics/:id", controller.topic.updateTopic);
 restRouter.delete("/topics/:id", controller.topic.deleteTopic);
 
 restRouter.get("/topics/:id/words", controller.word.getWordsByTopic);
+
+restRouter.get("/settings/:id", controller.settings.getSettings);
+restRouter.post("/settings/add", controller.settings.startInsertSettings);
+restRouter.post("/settings/commit/:transaction_id", controller.settings.commitInsertSettings);
+restRouter.post("/settings/rollback/:transaction_id", controller.settings.rollbackInsertSettings);

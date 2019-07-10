@@ -1,6 +1,6 @@
 import { BaseContext } from "koa";
 import {getConnection, getManager, Repository} from "typeorm";
-import uuid from "uuid-random";
+import { v4 as uuid } from "uuid";
 import {Setting} from "../models/settings";
 
 export default class SettingsController {
